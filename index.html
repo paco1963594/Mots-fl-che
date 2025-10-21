@@ -1,212 +1,181 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mots fléchés interactif</title>
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    h1 {
-      color: gold;
-      text-shadow: 0 0 10px red;
-      margin-bottom: 20px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(5, 60px);
-      gap: 4px;
-    }
-
-    .cell {
-      width: 60px;
-      height: 60px;
-      background-color: #111;
-      border: 2px solid #444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5em;
-      cursor: pointer;
-      transition: 0.2s;
-      color: gold;
-    }
-
-    .cell:hover {
-      background-color: #222;
-      box-shadow: 0 0 5px gold;
-    }
-
-    .blocked {
-      background-color: #600;
-      cursor: not-allowed;
-    }
-
-    .question-box {
-      background-color: #111;
-      border: 1px solid red;
-      margin-top: 20px;
-      padding: 15px;
-      width: 300px;
-      text-align: center;
-      border-radius: 10px;
-    }
-
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
-    }
-
-    button {
-      margin-top: 10px;
-      background-color: gold;
-      color: black;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: red;
-      color: white;
-    }
-
-    .message {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    footer {
-      margin-top: 30px;
-      color: #888;
-      font-size: 0.9em;
-    }
-
-    .counter {
-      position: fixed;
-      top: 10px;
-      right: 15px;
-      background-color: #111;
-      border: 1px solid red;
-      color: gold;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      box-shadow: 0 0 10px red;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mots fléchés 10x10 interactif</title>
+<style>
+  body {
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 { color: gold; text-shadow: 0 0 10px red; margin-bottom: 20px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(10, 50px);
+    grid-template-rows: repeat(10, 50px);
+    gap: 3px;
+  }
+  .cell {
+    width: 50px;
+    height: 50px;
+    background-color: #222;
+    border: 2px solid #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: 0.2s;
+    color: gold;
+  }
+  .cell:hover { background-color: #333; box-shadow: 0 0 5px gold; }
+  .blocked { background-color: #600; cursor: not-allowed; }
+  .question-box {
+    background-color: #111;
+    border: 1px solid red;
+    margin-top: 20px;
+    padding: 15px;
+    width: 300px;
+    text-align: center;
+    border-radius: 10px;
+  }
+  input { width: 100%; padding: 8px; margin-top: 10px; border: none; border-radius: 5px; }
+  button {
+    margin-top: 10px;
+    background-color: gold;
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  button:hover { background-color: red; color: white; }
+  .message { margin-top: 10px; font-weight: bold; }
+  .counter {
+    position: fixed;
+    top: 10px;
+    right: 15px;
+    background-color: #111;
+    border: 1px solid red;
+    color: gold;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 0 10px red;
+  }
+  footer { margin-top: 30px; color: #888; font-size: 0.9em; }
+</style>
 </head>
 <body>
-  <h1>🧩 Mots fléchés</h1>
+<h1>🧩 Mots fléchés 10x10</h1>
 
-  <div class="grid" id="grid"></div>
+<div class="grid" id="grid"></div>
 
-  <div class="question-box" id="questionBox" style="display:none;">
-    <p id="questionText"></p>
-    <input type="text" id="answerInput" placeholder="Votre réponse...">
-    <button id="validateBtn">Valider</button>
-    <p class="message" id="message"></p>
-  </div>
+<div class="question-box" id="questionBox" style="display:none;">
+  <p id="questionText"></p>
+  <input type="text" id="answerInput" placeholder="Votre réponse...">
+  <button id="validateBtn">Valider</button>
+  <p class="message" id="message"></p>
+</div>
 
-  <div class="counter" id="visitorCount">Visiteurs : ...</div>
+<div class="counter" id="visitorCount">Visiteurs : ...</div>
+<footer>© 2025 - Jeu HTML/JS/CSS</footer>
 
-  <footer>© 2025 - Jeu HTML, CSS, JS</footer>
+<script>
+const size = 10;
+let gridData = Array(size).fill(null).map(()=>Array(size).fill(""));
 
-  <script>
-    const gridData = [
-      ["", "", "", "", ""],
-      ["", "■", "", "■", ""],
-      ["", "", "", "", ""],
-      ["", "■", "", "■", ""],
-      ["", "", "", "", ""],
-    ];
+const definitions = {
+  // horizontal: clé = ligne-colonne
+  "0-0": {question:"Animal qui miaule", answer:"CHAT", direction:"across"},
+  "2-0": {question:"Couleur du ciel", answer:"BLEU", direction:"across"},
+  "4-0": {question:"Boisson chaude", answer:"CAFE", direction:"across"},
+  "0-2": {question:"Fruit rouge", answer:"FRAISE", direction:"down"},
+  "5-5": {question:"Planète rouge", answer:"MARS", direction:"across"},
+  "7-3": {question:"Etoile du matin", answer:"VENUS", direction:"down"}
+};
 
-    const definitions = {
-      "0-0": { question: "Animal qui miaule", answer: "CHAT" },
-      "2-0": { question: "Couleur du ciel clair", answer: "BLEU" },
-      "4-0": { question: "Boisson chaude du matin", answer: "CAFE" }
-    };
+// remplir quelques cases bloquées
+const blockedCells = [
+  [1,1],[1,3],[3,1],[3,3],[6,6],[8,8]
+];
+blockedCells.forEach(([r,c])=>gridData[r][c]="■");
 
-    const gridElement = document.getElementById("grid");
-    const questionBox = document.getElementById("questionBox");
-    const questionText = document.getElementById("questionText");
-    const answerInput = document.getElementById("answerInput");
-    const validateBtn = document.getElementById("validateBtn");
-    const message = document.getElementById("message");
+const gridEl = document.getElementById("grid");
+const questionBox = document.getElementById("questionBox");
+const questionText = document.getElementById("questionText");
+const answerInput = document.getElementById("answerInput");
+const validateBtn = document.getElementById("validateBtn");
+const message = document.getElementById("message");
 
-    let selectedCell = null;
+let selectedCell = null;
 
-    function renderGrid() {
-      gridElement.innerHTML = "";
-      gridData.forEach((row, r) => {
-        row.forEach((cell, c) => {
-          const div = document.createElement("div");
-          div.classList.add("cell");
-          if (cell === "■") div.classList.add("blocked");
-          div.textContent = cell !== "■" && cell !== "" ? cell : "";
-          div.onclick = () => selectCell(r, c);
-          gridElement.appendChild(div);
-        });
-      });
+function renderGrid() {
+  gridEl.innerHTML = "";
+  for(let r=0;r<size;r++){
+    for(let c=0;c<size;c++){
+      const div = document.createElement("div");
+      div.classList.add("cell");
+      if(gridData[r][c]==="■") div.classList.add("blocked");
+      div.textContent = gridData[r][c] !== "■" && gridData[r][c] !== "" ? gridData[r][c] : "";
+      div.onclick = () => selectCell(r,c);
+      gridEl.appendChild(div);
     }
+  }
+}
 
-    function selectCell(r, c) {
-      const key = `${r}-${c}`;
-      if (definitions[key]) {
-        selectedCell = { r, c, ...definitions[key] };
-        questionBox.style.display = "block";
-        questionText.textContent = definitions[key].question;
-        message.textContent = "";
-        answerInput.value = "";
+function selectCell(r,c){
+  const key = `${r}-${c}`;
+  if(definitions[key]){
+    selectedCell = {r,c,...definitions[key]};
+    questionBox.style.display = "block";
+    questionText.textContent = definitions[key].question;
+    message.textContent = "";
+    answerInput.value = "";
+    answerInput.focus();
+  } else {
+    questionBox.style.display = "none";
+  }
+}
+
+validateBtn.onclick = ()=>{
+  if(!selectedCell) return;
+  const user = answerInput.value.trim().toUpperCase();
+  const correct = selectedCell.answer.toUpperCase();
+  if(user===correct){
+    message.style.color="lime";
+    message.textContent="Bonne réponse !";
+    for(let i=0;i<correct.length;i++){
+      if(selectedCell.direction==="across"){
+        gridData[selectedCell.r][selectedCell.c+i]=correct[i];
       } else {
-        questionBox.style.display = "none";
+        gridData[selectedCell.r+i][selectedCell.c]=correct[i];
       }
     }
-
-    validateBtn.onclick = () => {
-      if (!selectedCell) return;
-      const userAnswer = answerInput.value.trim().toUpperCase();
-      const correct = selectedCell.answer.toUpperCase();
-      if (userAnswer === correct) {
-        message.style.color = "lime";
-        message.textContent = "Bonne réponse !";
-        for (let i = 0; i < correct.length; i++) {
-          gridData[selectedCell.r][selectedCell.c + i] = correct[i];
-        }
-        renderGrid();
-        setTimeout(() => {
-          questionBox.style.display = "none";
-        }, 800);
-      } else {
-        message.style.color = "red";
-        message.textContent = "Faux, réessayez.";
-      }
-    };
-
     renderGrid();
+    setTimeout(()=>{questionBox.style.display="none";},800);
+  } else {
+    message.style.color="red";
+    message.textContent="Faux, réessayez.";
+  }
+};
 
-    // === Compteur de visiteurs via CountAPI ===
-    const counter = document.getElementById("visitorCount");
-    const apiKey = "mots-fleches-" + window.location.hostname.replace(/\W/g, "");
-    fetch(`https://api.countapi.xyz/hit/${apiKey}/visites`)
-      .then(r => r.json())
-      .then(data => counter.textContent = `Visiteurs : ${data.value}`)
-      .catch(() => counter.textContent = "Compteur hors ligne");
-  </script>
+renderGrid();
+
+// compteur visiteurs CountAPI
+const counter = document.getElementById("visitorCount");
+const apiKey = "mots-fleches-10x10-"+window.location.hostname.replace(/\W/g,"");
+fetch(`https://api.countapi.xyz/hit/${apiKey}/visites`)
+.then(r=>r.json())
+.then(d=>counter.textContent=`Visiteurs : ${d.value}`)
+.catch(()=>counter.textContent="Compteur hors ligne");
+</script>
 </body>
 </html>
