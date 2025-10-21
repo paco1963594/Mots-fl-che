@@ -3,161 +3,127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mots fléchés 10x10 interactif</title>
+<title>Mots fléchés 10x10 ultime</title>
 <style>
-  body {
-    background-color: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  h1 { color: gold; text-shadow: 0 0 10px red; margin-bottom: 20px; }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(10, 50px);
-    grid-template-rows: repeat(10, 50px);
-    gap: 3px;
-  }
-  .cell {
-    width: 50px;
-    height: 50px;
-    background-color: #222;
-    border: 2px solid #444;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3em;
-    cursor: pointer;
-    transition: 0.2s;
-    color: gold;
-  }
-  .cell:hover { background-color: #333; box-shadow: 0 0 5px gold; }
-  .blocked { background-color: #600; cursor: not-allowed; }
-  .question-box {
-    background-color: #111;
-    border: 1px solid red;
-    margin-top: 20px;
-    padding: 15px;
-    width: 300px;
-    text-align: center;
-    border-radius: 10px;
-  }
-  input { width: 100%; padding: 8px; margin-top: 10px; border: none; border-radius: 5px; }
-  button {
-    margin-top: 10px;
-    background-color: gold;
-    color: black;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  button:hover { background-color: red; color: white; }
-  .message { margin-top: 10px; font-weight: bold; }
-  .counter {
-    position: fixed;
-    top: 10px;
-    right: 15px;
-    background-color: #111;
-    border: 1px solid red;
-    color: gold;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 14px;
-    box-shadow: 0 0 10px red;
-  }
-  footer { margin-top: 30px; color: #888; font-size: 0.9em; }
+body { background-color:#000;color:#fff;font-family:Arial,sans-serif;display:flex;flex-direction:column;align-items:center;padding:20px; }
+h1{color:gold;text-shadow:0 0 10px red;margin-bottom:20px;}
+.grid{display:grid;grid-template-columns:repeat(10,45px);grid-template-rows:repeat(10,45px);gap:3px;}
+.cell{width:45px;height:45px;background-color:#222;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:1.2em;cursor:pointer;transition:0.2s;color:gold;}
+.cell:hover{background-color:#333;box-shadow:0 0 5px gold;}
+.blocked{background-color:#600;cursor:not-allowed;}
+.question-box{background-color:#111;border:1px solid red;margin-top:20px;padding:15px;width:320px;text-align:center;border-radius:10px;}
+input{width:100%;padding:8px;margin-top:10px;border:none;border-radius:5px;}
+button{margin-top:10px;background-color:gold;color:black;border:none;padding:8px 16px;border-radius:5px;font-weight:bold;cursor:pointer;}
+button:hover{background-color:red;color:white;}
+.message{margin-top:10px;font-weight:bold;}
+.counter{position:fixed;top:10px;right:15px;background-color:#111;border:1px solid red;color:gold;padding:6px 10px;border-radius:8px;font-size:14px;box-shadow:0 0 10px red;}
+footer{margin-top:30px;color:#888;font-size:0.9em;}
 </style>
 </head>
 <body>
-<h1>🧩 Mots fléchés 10x10</h1>
-
+<h1>🧩 Mots fléchés 10x10 du jour - Version Ultime</h1>
 <div class="grid" id="grid"></div>
-
 <div class="question-box" id="questionBox" style="display:none;">
   <p id="questionText"></p>
   <input type="text" id="answerInput" placeholder="Votre réponse...">
   <button id="validateBtn">Valider</button>
+  <button id="showSolutionBtn">Voir solution</button>
   <p class="message" id="message"></p>
 </div>
-
 <div class="counter" id="visitorCount">Visiteurs : ...</div>
-<footer>© 2025 - Jeu HTML/JS/CSS</footer>
+<footer>© 2025 - Mots fléchés interactif ultime</footer>
 
 <script>
-const size = 10;
-let gridData = Array(size).fill(null).map(()=>Array(size).fill(""));
+const size=10;
+let gridData=Array(size).fill(null).map(()=>Array(size).fill(""));
+let wordBase=[]; 
+let dailyWords=[]; 
+let definitions={};
 
-const definitions = {
-  // horizontal: clé = ligne-colonne
-  "0-0": {question:"Animal qui miaule", answer:"CHAT", direction:"across"},
-  "2-0": {question:"Couleur du ciel", answer:"BLEU", direction:"across"},
-  "4-0": {question:"Boisson chaude", answer:"CAFE", direction:"across"},
-  "0-2": {question:"Fruit rouge", answer:"FRAISE", direction:"down"},
-  "5-5": {question:"Planète rouge", answer:"MARS", direction:"across"},
-  "7-3": {question:"Etoile du matin", answer:"VENUS", direction:"down"}
-};
+// Sélection quotidienne 15 mots
+function getDailyWords(base,count){
+  const date=new Date();
+  const seed=date.getFullYear()*10000+(date.getMonth()+1)*100+date.getDate();
+  let shuffled=[...base].sort((a,b)=>((Math.sin(seed+a.word.length*7)*10000)%1)-((Math.sin(seed+b.word.length*7)*10000)%1));
+  return shuffled.slice(0,count);
+}
 
-// remplir quelques cases bloquées
-const blockedCells = [
-  [1,1],[1,3],[3,1],[3,3],[6,6],[8,8]
-];
-blockedCells.forEach(([r,c])=>gridData[r][c]="■");
+// Algorithme ultime pour placer les mots
+function placeWords(words){
+  definitions={};
+  gridData=Array(size).fill(null).map(()=>Array(size).fill(""));
+  words.forEach(w=>{
+    let placed=false;
+    let tries=0;
+    while(!placed && tries<300){
+      let dir=Math.random()<0.5?"across":"down";
+      let r=Math.floor(Math.random()*(size-(dir==="down"?w.word.length:0)));
+      let c=Math.floor(Math.random()*(size-(dir==="across"?w.word.length:0)));
+      let canPlace=true;
+      for(let j=0;j<w.word.length;j++){
+        let rr=dir==="across"?r:r+j;
+        let cc=dir==="across"?c+j:c;
+        if(gridData[rr][cc]!="" && gridData[rr][cc]!==w.word[j]) canPlace=false;
+      }
+      if(canPlace){
+        for(let j=0;j<w.word.length;j++){
+          let rr=dir==="across"?r:r+j;
+          let cc=dir==="across"?c+j:c;
+          gridData[rr][cc]="";
+        }
+        definitions[`${r}-${c}`]={question:w.question,answer:w.word,direction:dir};
+        placed=true;
+      }
+      tries++;
+    }
+  });
+}
 
-const gridEl = document.getElementById("grid");
-const questionBox = document.getElementById("questionBox");
-const questionText = document.getElementById("questionText");
-const answerInput = document.getElementById("answerInput");
-const validateBtn = document.getElementById("validateBtn");
-const message = document.getElementById("message");
+const gridEl=document.getElementById("grid");
+const questionBox=document.getElementById("questionBox");
+const questionText=document.getElementById("questionText");
+const answerInput=document.getElementById("answerInput");
+const validateBtn=document.getElementById("validateBtn");
+const showSolutionBtn=document.getElementById("showSolutionBtn");
+const message=document.getElementById("message");
+let selectedCell=null;
 
-let selectedCell = null;
-
-function renderGrid() {
-  gridEl.innerHTML = "";
+function renderGrid(){
+  gridEl.innerHTML="";
   for(let r=0;r<size;r++){
     for(let c=0;c<size;c++){
-      const div = document.createElement("div");
+      const div=document.createElement("div");
       div.classList.add("cell");
       if(gridData[r][c]==="■") div.classList.add("blocked");
-      div.textContent = gridData[r][c] !== "■" && gridData[r][c] !== "" ? gridData[r][c] : "";
-      div.onclick = () => selectCell(r,c);
+      div.textContent=gridData[r][c]!=="■"&&gridData[r][c]!=""?gridData[r][c]:"";
+      div.onclick=()=>selectCell(r,c);
       gridEl.appendChild(div);
     }
   }
 }
 
 function selectCell(r,c){
-  const key = `${r}-${c}`;
+  const key=`${r}-${c}`;
   if(definitions[key]){
-    selectedCell = {r,c,...definitions[key]};
-    questionBox.style.display = "block";
-    questionText.textContent = definitions[key].question;
-    message.textContent = "";
-    answerInput.value = "";
+    selectedCell={r,c,...definitions[key]};
+    questionBox.style.display="block";
+    questionText.textContent=definitions[key].question;
+    message.textContent="";
+    answerInput.value="";
     answerInput.focus();
-  } else {
-    questionBox.style.display = "none";
-  }
+  } else questionBox.style.display="none";
 }
 
-validateBtn.onclick = ()=>{
+validateBtn.onclick=()=>{
   if(!selectedCell) return;
-  const user = answerInput.value.trim().toUpperCase();
-  const correct = selectedCell.answer.toUpperCase();
+  const user=answerInput.value.trim().toUpperCase();
+  const correct=selectedCell.answer.toUpperCase();
   if(user===correct){
     message.style.color="lime";
     message.textContent="Bonne réponse !";
     for(let i=0;i<correct.length;i++){
-      if(selectedCell.direction==="across"){
-        gridData[selectedCell.r][selectedCell.c+i]=correct[i];
-      } else {
-        gridData[selectedCell.r+i][selectedCell.c]=correct[i];
-      }
+      if(selectedCell.direction==="across") gridData[selectedCell.r][selectedCell.c+i]=correct[i];
+      else gridData[selectedCell.r+i][selectedCell.c]=correct[i];
     }
     renderGrid();
     setTimeout(()=>{questionBox.style.display="none";},800);
@@ -165,17 +131,38 @@ validateBtn.onclick = ()=>{
     message.style.color="red";
     message.textContent="Faux, réessayez.";
   }
-};
+}
 
-renderGrid();
+showSolutionBtn.onclick=()=>{
+  Object.keys(definitions).forEach(k=>{
+    const {r,c,answer,direction}=definitions[k];
+    for(let i=0;i<answer.length;i++){
+      if(direction==="across") gridData[r][c+i]=answer[i];
+      else gridData[r+i][c]=answer[i];
+    }
+  });
+  renderGrid();
+  questionBox.style.display="none";
+}
 
-// compteur visiteurs CountAPI
-const counter = document.getElementById("visitorCount");
-const apiKey = "mots-fleches-10x10-"+window.location.hostname.replace(/\W/g,"");
+// compteur visiteurs
+const counter=document.getElementById("visitorCount");
+const apiKey="mots-fleches-ultime-10x10-"+window.location.hostname.replace(/\W/g,"");
 fetch(`https://api.countapi.xyz/hit/${apiKey}/visites`)
-.then(r=>r.json())
-.then(d=>counter.textContent=`Visiteurs : ${d.value}`)
+.then(r=>r.json()).then(d=>counter.textContent=`Visiteurs : ${d.value}`)
 .catch(()=>counter.textContent="Compteur hors ligne");
+
+// Charger JSON dynamique
+fetch('mots.json')
+  .then(response => response.json())
+  .then(data => {
+    wordBase=data;
+    dailyWords=getDailyWords(wordBase,15);
+    placeWords(dailyWords);
+    renderGrid();
+  })
+  .catch(err => console.error("Erreur chargement mots:", err));
+
 </script>
 </body>
 </html>
