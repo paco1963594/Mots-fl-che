@@ -2,31 +2,111 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Grille du jour</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landing Page Mots Fléchés</title>
 <style>
-body { background-color:#000; color:#fff; font-family:Arial,sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; }
-button { background-color:gold; color:black; border:none; padding:12px 24px; font-size:16px; border-radius:6px; cursor:pointer; }
-button:hover { background-color:red; color:white; }
-h1 { color:gold; margin-bottom:20px; text-align:center; }
+body {
+  margin:0;
+  padding:0;
+  background-color:#111;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Motif léger de mots fléchés en arrière-plan */
+body::before {
+  content:"";
+  position: absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  background-image: repeating-linear-gradient(0deg, rgba(255,215,0,0.05) 0 2px, transparent 2px 20px), 
+                    repeating-linear-gradient(90deg, rgba(255,215,0,0.05) 0 2px, transparent 2px 20px);
+  z-index:0;
+}
+
+.container {
+  position: relative;
+  z-index:1;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 3em;
+  color: gold;
+  text-shadow: 0 0 10px red, 0 0 20px gold;
+  margin-bottom: 10px;
+  animation: glow 2.5s infinite alternate;
+}
+
+@keyframes glow {
+  0% { text-shadow: 0 0 5px gold, 0 0 10px red; }
+  50% { text-shadow: 0 0 15px gold, 0 0 25px red; }
+  100% { text-shadow: 0 0 5px gold, 0 0 10px red; }
+}
+
+p {
+  font-size: 1.4em;
+  color: #f5f5f5;
+  margin-bottom: 30px;
+}
+
+.button-link {
+  display: inline-block;
+  margin: 15px;
+  background-color: gold;
+  color: black;
+  padding: 16px 36px;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px gold;
+}
+
+.button-link:hover {
+  background-color: red;
+  color: white;
+  transform: scale(1.1) rotate(-2deg);
+  box-shadow: 0 0 20px gold, 0 0 30px red;
+}
+
+footer {
+  position: absolute;
+  bottom: 15px;
+  color: #888;
+  font-size: 0.9em;
+}
+
+/* Responsive pour mobile */
+@media (max-width:600px){
+  h1{font-size:2em;}
+  p{font-size:1.2em;}
+  .button-link{padding:12px 24px;font-size:1em;}
+}
 </style>
 </head>
 <body>
-<h1>Grille de mots fléchés du jour</h1>
-<button id="openGridBtn">Ouvrir la grille</button>
+<div class="container">
+  <h1>🧩 Jouez aux Mots Fléchés !</h1>
+  <p>Chaque jour, une nouvelle grille pour tester vos compétences et votre logique.</p>
 
-<script>
-// Remplacer cette URL par celle de ton site/journal qui accepte un paramètre pour le jour
-const baseUrl = "https://www.exemple-journal.com/mots-fleches?date=";
+  <a href="https://www.tv5monde.com/cms/chaine-francophone/jeux-de-mots-fleches/" target="_blank" class="button-link">
+    Grille du jour TV5 Monde
+  </a>
 
-document.getElementById("openGridBtn").onclick = () => {
-    const today = new Date();
-    // Génère une chaîne du type 20251021
-    const dateStr = today.getFullYear().toString() 
-                    + String(today.getMonth()+1).padStart(2,'0') 
-                    + String(today.getDate()).padStart(2,'0');
-    const fullUrl = baseUrl + dateStr;
-    window.open(fullUrl, "_blank");
-}
-</script>
+  <a href="https://www.lexpress.fr/culture/jeux/" target="_blank" class="button-link">
+    Grilles L’Express Jeux
+  </a>
+</div>
+
+<footer>© 2025 - Plateforme Mots Fléchés Interactive</footer>
 </body>
 </html>
