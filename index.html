@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🧩 Mots fléchés interactif</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mots fléchés interactif</title>
   <style>
     body {
       background-color: #000;
@@ -12,7 +12,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: start;
       min-height: 100vh;
       padding: 20px;
     }
@@ -26,7 +25,7 @@
     .grid {
       display: grid;
       grid-template-columns: repeat(5, 60px);
-      gap: 3px;
+      gap: 4px;
     }
 
     .cell {
@@ -37,18 +36,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: gold;
       font-size: 1.5em;
       cursor: pointer;
       transition: 0.2s;
+      color: gold;
     }
 
     .cell:hover {
       background-color: #222;
+      box-shadow: 0 0 5px gold;
     }
 
     .blocked {
-      background-color: #500;
+      background-color: #600;
+      cursor: not-allowed;
     }
 
     .question-box {
@@ -111,20 +112,20 @@
   </style>
 </head>
 <body>
-  <h1>🧩 Jeu de mots fléchés</h1>
+  <h1>🧩 Mots fléchés</h1>
 
   <div class="grid" id="grid"></div>
 
   <div class="question-box" id="questionBox" style="display:none;">
     <p id="questionText"></p>
-    <input type="text" id="answerInput" placeholder="Votre réponse..." />
+    <input type="text" id="answerInput" placeholder="Votre réponse...">
     <button id="validateBtn">Valider</button>
     <p class="message" id="message"></p>
   </div>
 
   <div class="counter" id="visitorCount">Visiteurs : ...</div>
 
-  <footer>© 2025 - Jeu conçu en HTML, CSS et JS pur</footer>
+  <footer>© 2025 - Jeu HTML, CSS, JS</footer>
 
   <script>
     const gridData = [
@@ -138,7 +139,7 @@
     const definitions = {
       "0-0": { question: "Animal qui miaule", answer: "CHAT" },
       "2-0": { question: "Couleur du ciel clair", answer: "BLEU" },
-      "4-0": { question: "Boisson du matin", answer: "CAFE" },
+      "4-0": { question: "Boisson chaude du matin", answer: "CAFE" }
     };
 
     const gridElement = document.getElementById("grid");
@@ -179,17 +180,18 @@
 
     validateBtn.onclick = () => {
       if (!selectedCell) return;
-      const userAnswer = answerInput.value.toUpperCase();
-      if (userAnswer === selectedCell.answer) {
+      const userAnswer = answerInput.value.trim().toUpperCase();
+      const correct = selectedCell.answer.toUpperCase();
+      if (userAnswer === correct) {
         message.style.color = "lime";
         message.textContent = "Bonne réponse !";
-        for (let i = 0; i < selectedCell.answer.length; i++) {
-          gridData[selectedCell.r][selectedCell.c + i] = selectedCell.answer[i];
+        for (let i = 0; i < correct.length; i++) {
+          gridData[selectedCell.r][selectedCell.c + i] = correct[i];
         }
         renderGrid();
         setTimeout(() => {
           questionBox.style.display = "none";
-        }, 1000);
+        }, 800);
       } else {
         message.style.color = "red";
         message.textContent = "Faux, réessayez.";
@@ -198,16 +200,13 @@
 
     renderGrid();
 
-    // === Compteur de visiteurs ===
+    // === Compteur de visiteurs via CountAPI ===
     const counter = document.getElementById("visitorCount");
-    fetch("https://api.countapi.xyz/hit/mots-fleches/visites")
-      .then((res) => res.json())
-      .then((data) => {
-        counter.textContent = `Visiteurs : ${data.value}`;
-      })
-      .catch(() => {
-        counter.textContent = "Compteur indisponible";
-      });
+    const apiKey = "mots-fleches-" + window.location.hostname.replace(/\W/g, "");
+    fetch(`https://api.countapi.xyz/hit/${apiKey}/visites`)
+      .then(r => r.json())
+      .then(data => counter.textContent = `Visiteurs : ${data.value}`)
+      .catch(() => counter.textContent = "Compteur hors ligne");
   </script>
 </body>
 </html>
