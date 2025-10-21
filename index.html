@@ -1,0 +1,131 @@
+// === App.js ===
+import React, { useState } from "react";
+import "./index.css";
+
+const initialGrid = [
+  ["", "", "", "", ""],
+  ["", "■", "", "■", ""],
+  ["", "", "", "", ""],
+  ["", "■", "", "■", ""],
+  ["", "", "", "", ""],
+];
+
+const definitions = {
+  "0-0": { question: "Animal qui miaule", answer: "CHAT", direction: "across" },
+  "2-0": { question: "Couleur du ciel clair", answer: "BLEU", direction: "across" },
+  "4-0": { question: "Boisson du matin", answer: "CAFE", direction: "across" },
+};
+
+export default function App() {
+  const [grid, setGrid] = useState(initialGrid);
+  const [selectedCell, setSelectedCell] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleCellClick = (row, col) => {
+    const key = `${row}-${col}`;
+    if (definitions[key]) {
+      setSelectedCell({ row, col, def: definitions[key] });
+      setMessage("");
+    } else {
+      setSelectedCell(null);
+      setMessage("Aucune question ici.");
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!selectedCell) return;
+    const { answer } = selectedCell.def;
+    if (inputValue.toUpperCase() === answer) {
+      setMessage("Bonne réponse !");
+      const newGrid = [...grid];
+      for (let i = 0; i < answer.length; i++) {
+        if (selectedCell.def.direction === "across") {
+          newGrid[selectedCell.row][selectedCell.col + i] = answer[i];
+        }
+      }
+      setGrid(newGrid);
+      setInputValue("");
+      setSelectedCell(null);
+    } else {
+      setMessage("Faux, essaie encore.");
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center bg-black text-white min-h-screen p-8">
+      <h1 className="text-3xl font-bold mb-6 text-yellow-400">
+        🧩 Jeu de mots fléchés interactif
+      </h1>
+
+      <div className="grid grid-cols-5 gap-1">
+        {grid.map((row, rIndex) =>
+          row.map((cell, cIndex) => (
+            <div
+              key={`${rIndex}-${cIndex}`}
+              onClick={() => handleCellClick(rIndex, cIndex)}
+              className={`w-12 h-12 flex items-center justify-center border ${
+                cell === "■" ? "bg-gray-700" : "bg-gray-900 hover:bg-gray-800"
+              } text-yellow-300 cursor-pointer text-xl font-semibold`}
+            >
+              {cell && cell !== "■" ? cell : ""}
+            </div>
+          ))
+        )}
+      </div>
+
+      {selectedCell && (
+        <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg w-80 text-center">
+          <p className="mb-3 text-lg text-yellow-200 font-semibold">
+            {selectedCell.def.question}
+          </p>
+          <input
+            type="text"
+            className="text-black px-2 py-1 rounded w-full"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Votre réponse..."
+          />
+          <button
+            className="mt-3 bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-black font-bold"
+            onClick={handleSubmit}
+          >
+            Valider
+          </button>
+        </div>
+      )}
+
+      {message && (
+        <p
+          className={`mt-4 text-lg font-semibold ${
+            message === "Bonne réponse !" ? "text-green-400" : "text-red-400"
+          }`}
+        >
+          {message}
+        </p>
+      )}
+
+      <footer className="mt-10 text-gray-500 text-sm">
+        © 2025 - Jeu développé en React avec ❤️ et un peu de café.
+      </footer>
+    </div>
+  );
+}
+
+// === index.css ===
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+}
+
+// === tailwind.config.js ===
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  theme: { extend: {} },
+  plugins: [],
+};
