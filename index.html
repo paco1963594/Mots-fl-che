@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mots fléchés 10x10 ultime</title>
+<title>Mots fléchés 10x10 Ultime</title>
 <style>
 body { background-color:#000;color:#fff;font-family:Arial,sans-serif;display:flex;flex-direction:column;align-items:center;padding:20px; }
 h1{color:gold;text-shadow:0 0 10px red;margin-bottom:20px;}
@@ -18,6 +18,8 @@ button:hover{background-color:red;color:white;}
 .message{margin-top:10px;font-weight:bold;}
 .counter{position:fixed;top:10px;right:15px;background-color:#111;border:1px solid red;color:gold;padding:6px 10px;border-radius:8px;font-size:14px;box-shadow:0 0 10px red;}
 footer{margin-top:30px;color:#888;font-size:0.9em;}
+a.button-link{display:inline-block;margin-top:10px;background-color:gold;color:black;padding:8px 16px;border-radius:5px;text-decoration:none;font-weight:bold;}
+a.button-link:hover{background-color:red;color:white;}
 </style>
 </head>
 <body>
@@ -30,17 +32,162 @@ footer{margin-top:30px;color:#888;font-size:0.9em;}
   <button id="showSolutionBtn">Voir solution</button>
   <p class="message" id="message"></p>
 </div>
+<a href="https://www.tv5monde.com/cms/chaine-francophone/jeux-de-mots-fleches/" target="_blank" class="button-link">Voir plus de grilles TV5 Monde</a>
 <div class="counter" id="visitorCount">Visiteurs : ...</div>
 <footer>© 2025 - Mots fléchés interactif ultime</footer>
 
 <script>
 const size=10;
 let gridData=Array(size).fill(null).map(()=>Array(size).fill(""));
-let wordBase=[]; 
-let dailyWords=[]; 
-let definitions={};
+let wordBase=[ 
+  {"word":"CHAT","question":"Animal qui miaule"},
+  {"word":"BLEU","question":"Couleur du ciel"},
+  {"word":"CAFE","question":"Boisson chaude"},
+  {"word":"FRAISE","question":"Fruit rouge"},
+  {"word":"MARS","question":"Planète rouge"},
+  {"word":"VENUS","question":"Étoile du matin"},
+  {"word":"PIANO","question":"Instrument de musique"},
+  {"word":"LION","question":"Gros félin"},
+  {"word":"COLA","question":"Boisson gazeuse"},
+  {"word":"FOURMI","question":"Petit insecte"},
+  {"word":"ROUGE","question":"Couleur vive"},
+  {"word":"ANNE","question":"Prénom féminin"},
+  {"word":"AFRIQUE","question":"Continent"},
+  {"word":"TENNIS","question":"Sport de balle"},
+  {"word":"COUTEAU","question":"Outil tranchant"},
+  {"word":"SOLEIL","question":"Astre du jour"},
+  {"word":"NEIGE","question":"Précipitation blanche"},
+  {"word":"ORANGE","question":"Fruit et couleur"},
+  {"word":"ECRAN","question":"Support visuel"},
+  {"word":"EAU","question":"Liquide vital"},
+  {"word":"VOITURE","question":"Moyen de transport"},
+  {"word":"MONTAGNE","question":"Relief élevé"},
+  {"word":"RIVIERE","question":"Cours d'eau"},
+  {"word":"ORDINATEUR","question":"Machine pour coder"},
+  {"word":"TABLE","question":"Mobilier pour manger"},
+  {"word":"CHAIR","question":"Muscle du corps"},
+  {"word":"LIVRE","question":"Lecture"},
+  {"word":"POMME","question":"Fruit commun"},
+  {"word":"VENT","question":"Air en mouvement"},
+  {"word":"LUNE","question":"Satellite terrestre"},
+  {"word":"PLANTE","question":"Organisme végétal"},
+  {"word":"NUAGE","question":"Vapeur condensée"},
+  {"word":"SAVON","question":"Produit de nettoyage"},
+  {"word":"GLACE","question":"Froid et dessert"},
+  {"word":"FLEUR","question":"Partie colorée des plantes"},
+  {"word":"ARBRE","question":"Grande plante ligneuse"},
+  {"word":"ROCHER","question":"Bloc de pierre"},
+  {"word":"MER","question":"Étendue d'eau salée"},
+  {"word":"LAC","question":"Petit plan d'eau"},
+  {"word":"RUE","question":"Voie urbaine"},
+  {"word":"MAISON","question":"Habitation"},
+  {"word":"PORTE","question":"Ouverture dans un mur"},
+  {"word":"FENETRE","question":"Ouverture vitrée"},
+  {"word":"CHAISE","question":"Pour s'asseoir"},
+  {"word":"COUCHER","question":"Aller au lit"},
+  {"word":"MANGER","question":"Action de se nourrir"},
+  {"word":"BOIRE","question":"Liquide à ingérer"},
+  {"word":"COURIR","question":"Se déplacer vite"},
+  {"word":"JOUER","question":"Divertissement"},
+  {"word":"DORMIR","question":"Repos nocturne"},
+  {"word":"CHANTER","question":"Produire des sons mélodieux"},
+  {"word":"DANSE","question":"Mouvement rythmique"},
+  {"word":"MONTRE","question":"Indique l'heure"},
+  {"word":"BATEAU","question":"Moyen de transport sur l'eau"},
+  {"word":"TRAIN","question":"Transport ferroviaire"},
+  {"word":"AVION","question":"Transport aérien"},
+  {"word":"VELO","question":"Deux roues"},
+  {"word":"BONNET","question":"Accessoire pour la tête"},
+  {"word":"GANTS","question":"Protègent les mains"},
+  {"word":"LUNETTE","question":"Pour voir mieux"},
+  {"word":"CAMPING","question":"Séjour en plein air"},
+  {"word":"MUSEE","question":"Lieu culturel"},
+  {"word":"THEATRE","question":"Lieu pour spectacles"},
+  {"word":"CINEMA","question":"Voir des films"},
+  {"word":"GUITARE","question":"Instrument à cordes"},
+  {"word":"VIOLON","question":"Instrument à cordes frottées"},
+  {"word":"TROMPETTE","question":"Instrument à vent"},
+  {"word":"BATTERIE","question":"Instrument de percussion"},
+  {"word":"CLAVIER","question":"Instrument à touches"},
+  {"word":"ORCHESTRE","question":"Groupe de musiciens"},
+  {"word":"CHAMP","question":"Terrain agricole"},
+  {"word":"JARDIN","question":"Lieu pour plantes"},
+  {"word":"FERME","question":"Habitat agricole"},
+  {"word":"ANIMAL","question":"Être vivant"},
+  {"word":"OISEAU","question":"Animal qui vole"},
+  {"word":"POISSON","question":"Animal aquatique"},
+  {"word":"REPTILE","question":"Animal à écailles"},
+  {"word":"INSECTE","question":"Petit animal à six pattes"},
+  {"word":"FELIN","question":"Groupe de carnivores"},
+  {"word":"CANARD","question":"Oiseau aquatique"},
+  {"word":"CHEVAL","question":"Animal de ferme"},
+  {"word":"VACHE","question":"Fournit du lait"},
+  {"word":"MOUTON","question":"Animal laineux"},
+  {"word":"COCHON","question":"Animal rose"},
+  {"word":"POULE","question":"Oiseau de basse-cour"},
+  {"word":"CHATON","question":"Jeune chat"},
+  {"word":"CHIOT","question":"Jeune chien"},
+  {"word":"ARCTIQUE","question":"Région glacée"},
+  {"word":"SAHARA","question":"Désert chaud"},
+  {"word":"FORET","question":"Grand espace boisé"},
+  {"word":"PRAIRIE","question":"Terrain herbeux"},
+  {"word":"RIVAGE","question":"Bord de mer"},
+  {"word":"OCÉAN","question":"Grande étendue d'eau"},
+  {"word":"ILE","question":"Terre entourée d'eau"},
+  {"word":"MONT","question":"Élévation du sol"},
+  {"word":"VALLEE","question":"Espace entre deux montagnes"},
+  {"word":"PLAGE","question":"Sable au bord de l'eau"},
+  {"word":"CAVE","question":"Lieu sous terre"},
+  {"word":"GRENIER","question":"Sous le toit"},
+  {"word":"BALCON","question":"Terrasse d'un appartement"},
+  {"word":"ESCALIER","question":"Pour monter ou descendre"},
+  {"word":"ASCENSEUR","question":"Monte-people"},
+  {"word":"FENOUIL","question":"Légume aromatique"},
+  {"word":"CAROTTE","question":"Légume orange"},
+  {"word":"POIREAU","question":"Légume long"},
+  {"word":"OIGNON","question":"Légume qui fait pleurer"},
+  {"word":"TOMATE","question":"Fruit rouge souvent cuisiné"},
+  {"word":"CONCOMBRE","question":"Légume vert cru"},
+  {"word":"COURGETTE","question":"Légume vert long"},
+  {"word":"POTIRON","question":"Courge d'automne"},
+  {"word":"HARICOT","question":"Légume sec ou vert"},
+  {"word":"PETIT-POIS","question":"Légume rond"},
+  {"word":"EPINARD","question":"Légume vert feuillu"},
+  {"word":"CHOU","question":"Légume rond"},
+  {"word":"LAITUE","question":"Salade verte"},
+  {"word":"BETTERAVE","question":"Racine rouge"},
+  {"word":"NAVET","question":"Racine blanche"},
+  {"word":"RADIS","question":"Petit légume rond"},
+  {"word":"AIL","question":"Légume odorant"},
+  {"word":"GINGEMBRE","question":"Racine piquante"},
+  {"word":"CITRON","question":"Agrume jaune"},
+  {"word":"BANANE","question":"Fruit long jaune"},
+  {"word":"RAISIN","question":"Fruit de vigne"},
+  {"word":"CERISE","question":"Fruit rouge"},
+  {"word":"ABRICOT","question":"Fruit orangé"},
+  {"word":"PECHER","question":"Arbre fruitier"},
+  {"word":"PRUNE","question":"Fruit violet"},
+  {"word":"MANGUE","question":"Fruit tropical"},
+  {"word":"ANANAS","question":"Fruit tropical"},
+  {"word":"KIWI","question":"Fruit vert"},
+  {"word":"PAIN","question":"Aliment de base"},
+  {"word":"FROMAGE","question":"Produit laitier"},
+  {"word":"BEURRE","question":"Produit laitier jaune"},
+  {"word":"YAOURT","question":"Produit laitier fermenté"},
+  {"word":"LENTILLE","question":"Légume sec"},
+  {"word":"RIZ","question":"Céréale"},
+  {"word":"PATES","question":"Céréale cuisinée"},
+  {"word":"BOEUF","question":"Viande rouge"},
+  {"word":"PORC","question":"Viande rose"},
+  {"word":"POULET","question":"Viande blanche"},
+  {"word":"SAUMON","question":"Poisson rose"},
+  {"word":"THON","question":"Poisson en conserve"},
+  {"word":"CREVETTE","question":"Petit crustacé"},
+  {"word":"HOMARD","question":"Crustacé grand"},
+  {"word":"CRABE","question":"Crustacé à pinces"}
+]; // tu peux continuer jusqu'à 200+
 
-// Sélection quotidienne 15 mots
+let dailyWords=[], definitions={};
 function getDailyWords(base,count){
   const date=new Date();
   const seed=date.getFullYear()*10000+(date.getMonth()+1)*100+date.getDate();
@@ -48,7 +195,6 @@ function getDailyWords(base,count){
   return shuffled.slice(0,count);
 }
 
-// Algorithme ultime pour placer les mots
 function placeWords(words){
   definitions={};
   gridData=Array(size).fill(null).map(()=>Array(size).fill(""));
@@ -145,24 +291,17 @@ showSolutionBtn.onclick=()=>{
   questionBox.style.display="none";
 }
 
-// compteur visiteurs
+// compteur visiteurs simple
 const counter=document.getElementById("visitorCount");
 const apiKey="mots-fleches-ultime-10x10-"+window.location.hostname.replace(/\W/g,"");
 fetch(`https://api.countapi.xyz/hit/${apiKey}/visites`)
 .then(r=>r.json()).then(d=>counter.textContent=`Visiteurs : ${d.value}`)
 .catch(()=>counter.textContent="Compteur hors ligne");
 
-// Charger JSON dynamique
-fetch('mots.json')
-  .then(response => response.json())
-  .then(data => {
-    wordBase=data;
-    dailyWords=getDailyWords(wordBase,15);
-    placeWords(dailyWords);
-    renderGrid();
-  })
-  .catch(err => console.error("Erreur chargement mots:", err));
-
+// initialisation
+dailyWords = getDailyWords(wordBase,15);
+placeWords(dailyWords);
+renderGrid();
 </script>
 </body>
 </html>
